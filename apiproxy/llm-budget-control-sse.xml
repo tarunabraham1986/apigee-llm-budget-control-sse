@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+ Copyright 2026 Google LLC
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<APIProxy revision="1" name="llm-budget-control-sse">
+  <DisplayName>llm-budget-control-sse</DisplayName>
+  <Description>Plug-and-Play LLM Micro-Dollar Budget Control Proxy for Buffered JSON and Streaming SSE Responses using LLMTokenQuota</Description>
+  <Policies>
+    <Policy>AM-DetectAnthropic</Policy>
+    <Policy>AM-DetectOpenAI</Policy>
+    <Policy>AM-EnableSSEMode</Policy>
+    <Policy>AM-FormatQuotaViolation</Policy>
+    <Policy>AM-InitRequest</Policy>
+    <Policy>AM-ResolveGoogleLocation</Policy>
+    <Policy>AM-SetAnthropicTarget</Policy>
+    <Policy>AM-SetGoogleTarget</Policy>
+    <Policy>AM-SetOpenAITarget</Policy>
+    <Policy>AM-SetStreamingQueryParam</Policy>
+    <Policy>AM-SetTelemetryHeaders</Policy>
+    <Policy>AM-UseGlobalVertexHost</Policy>
+    <Policy>DC-CollectCostMetrics</Policy>
+    <Policy>EV-ExtractRequest</Policy>
+    <Policy>JS-CalculateCost</Policy>
+    <Policy>KVM-GetModelCosts</Policy>
+    <Policy>KVM-GetProviderConfig</Policy>
+    <Policy>LTQ-CountBudget</Policy>
+    <Policy>LTQ-EnforceBudget</Policy>
+    <Policy>VA-VerifyAPIKey</Policy>
+  </Policies>
+  <ProxyEndpoints>
+    <ProxyEndpoint>default</ProxyEndpoint>
+  </ProxyEndpoints>
+  <Resources>
+    <Resource>jsc://CalculateCost.js</Resource>
+  </Resources>
+  <TargetEndpoints>
+    <TargetEndpoint>google</TargetEndpoint>
+    <TargetEndpoint>google-sse</TargetEndpoint>
+    <TargetEndpoint>others</TargetEndpoint>
+    <TargetEndpoint>others-sse</TargetEndpoint>
+  </TargetEndpoints>
+</APIProxy>

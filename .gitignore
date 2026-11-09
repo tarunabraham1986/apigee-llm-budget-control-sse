@@ -1,0 +1,19 @@
+# Environment variables and generated demo keys
+.env
+demo-keys.env
+*.env
+
+# Python / Node / Notebook build artifacts
+.venv/
+node_modules/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Temporary / Debug output files
+headers.txt
+response.json
+*.har
+debug-*.json
+raw_trace*.json
+.DS_Store

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+ Copyright 2026 Google LLC
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<AssignMessage continueOnError="false" enabled="true" name="AM-SetAnthropicTarget">
+  <DisplayName>AM-SetAnthropicTarget</DisplayName>
+  <Remove>
+    <Headers>
+      <Header name="x-apikey"/>
+      <Header name="x-llm-provider"/>
+      <Header name="Authorization"/>
+    </Headers>
+  </Remove>
+  <Set>
+    <Headers>
+      <Header name="x-api-key">{private.credential_for_upstream}</Header>
+      <Header name="anthropic-version">2023-06-01</Header>
+    </Headers>
+  </Set>
+  <AssignVariable>
+    <Name>fallback_anthropic_url</Name>
+    <Value>https://api.anthropic.com/v1/messages</Value>
+  </AssignVariable>
+  <AssignVariable>
+    <Name>effective_target_url_template</Name>
+    <Template>{firstnonnull(target_url_template,fallback_anthropic_url)}</Template>
+  </AssignVariable>
+  <AssignVariable>
+    <Name>target.url</Name>
+    <Template ref="effective_target_url_template"/>
+  </AssignVariable>
+  <AssignVariable>
+    <Name>target.copy.pathsuffix</Name>
+    <Value>false</Value>
+  </AssignVariable>
+  <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+</AssignMessage>

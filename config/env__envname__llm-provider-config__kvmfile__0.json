@@ -1,0 +1,60 @@
+{
+  "keyValueEntries": [
+    {
+      "name": "google__projectId",
+      "value": "VERTEXAI_PROJECT_ID"
+    },
+    {
+      "name": "google__region",
+      "value": "VERTEXAI_REGION"
+    },
+    {
+      "name": "google__credential",
+      "value": ""
+    },
+    {
+      "name": "google__targetUrl",
+      "value": "https://VERTEXAI_REGION-aiplatform.googleapis.com/v1/projects/VERTEXAI_PROJECT_ID/locations/VERTEXAI_REGION/publishers/google/models/{model}:generateContent"
+    },
+    {
+      "name": "google__bufferedTargetUrl",
+      "value": "https://{resolved_vertex_host}/v1/projects/{resolved_vertex_project}/locations/{resolved_vertex_location}/publishers/google/models/{model}:generateContent"
+    },
+    {
+      "name": "google__sseTargetUrl",
+      "value": "https://{resolved_vertex_host}/v1/projects/{resolved_vertex_project}/locations/{resolved_vertex_location}/publishers/google/models/{model}:streamGenerateContent"
+    },
+    {
+      "name": "openai__credential",
+      "value": "OPENAI_API_KEY_PLACEHOLDER"
+    },
+    {
+      "name": "openai__targetUrl",
+      "value": "https://api.openai.com/v1/chat/completions"
+    },
+    {
+      "name": "openai__bufferedTargetUrl",
+      "value": "https://api.openai.com/v1/chat/completions"
+    },
+    {
+      "name": "openai__sseTargetUrl",
+      "value": "https://api.openai.com/v1/chat/completions"
+    },
+    {
+      "name": "anthropic__credential",
+      "value": "ANTHROPIC_API_KEY_PLACEHOLDER"
+    },
+    {
+      "name": "anthropic__targetUrl",
+      "value": "https://api.anthropic.com/v1/messages"
+    },
+    {
+      "name": "anthropic__bufferedTargetUrl",
+      "value": "https://api.anthropic.com/v1/messages"
+    },
+    {
+      "name": "anthropic__sseTargetUrl",
+      "value": "https://api.anthropic.com/v1/messages"
+    }
+  ]
+}

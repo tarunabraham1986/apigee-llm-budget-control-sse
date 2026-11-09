@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+ Copyright 2026 Google LLC
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<ProxyEndpoint name="default">
+  <Description>Unified LLM Budget Control ProxyEndpoint for Buffered JSON and Streaming SSE Traffic</Description>
+  <FaultRules>
+    <FaultRule name="QuotaViolation">
+      <Condition>fault.name = "LLMTokenQuotaViolation"</Condition>
+      <Step>
+        <Name>AM-FormatQuotaViolation</Name>
+      </Step>
+    </FaultRule>
+  </FaultRules>
+  <DefaultFaultRule name="DefaultFaultRule">
+    <AlwaysEnforce>true</AlwaysEnforce>
+    <Step>
+      <Name>AM-SetTelemetryHeaders</Name>
+      <Condition>llm_provider != null</Condition>
+    </Step>
+  </DefaultFaultRule>
+  <PreFlow name="PreFlow">
+    <Request>
+      <Step>
+        <Name>VA-VerifyAPIKey</Name>
+      </Step>
+      <Step>
+        <Name>EV-ExtractRequest</Name>
+      </Step>
+      <Step>
+        <Name>AM-InitRequest</Name>
+      </Step>
+      <Step>
+        <Name>AM-DetectOpenAI</Name>
+        <Condition>((header_llm_provider = null) or (header_llm_provider = "")) and ((proxy.pathsuffix MatchesPath "/v1/chat/completions") or (proxy.pathsuffix MatchesPath "/chat/completions") or (proxy.pathsuffix MatchesPath "/v1/responses") or (model Matches "gpt-*") or (model Matches "o1*") or (model Matches "o3*") or (model Matches "o4*"))</Condition>
+      </Step>
+      <Step>
+        <Name>AM-DetectAnthropic</Name>
+        <Condition>((header_llm_provider = null) or (header_llm_provider = "")) and ((proxy.pathsuffix MatchesPath "/v1/messages") or (proxy.pathsuffix MatchesPath "/messages") or (model Matches "claude-*"))</Condition>
+      </Step>
+      <Step>
+        <Name>AM-EnableSSEMode</Name>
+        <Condition>(proxy.pathsuffix Matches "*:streamGenerateContent") or (json_stream = "true") or (request.queryparam.alt = "sse") or (request.header.Accept Matches "*text/event-stream*")</Condition>
+      </Step>
+      <Step>
+        <Name>KVM-GetProviderConfig</Name>
+      </Step>
+      <Step>
+        <Name>KVM-GetModelCosts</Name>
+      </Step>
+      <Step>
+        <Name>LTQ-EnforceBudget</Name>
+      </Step>
+    </Request>
+    <Response/>
+  </PreFlow>
+  <Flows/>
+  <PostFlow name="PostFlow">
+    <Request/>
+    <Response>
+      <Step>
+        <Name>JS-CalculateCost</Name>
+        <Condition>(is_sse_request = "false") and (response.status.code &gt;= 200) and (response.status.code &lt; 300)</Condition>
+      </Step>
+      <Step>
+        <Name>LTQ-CountBudget</Name>
+        <Condition>(is_sse_request = "false") and (should_record_cost = "true") and (llm_transaction_cost_micro &gt; 0)</Condition>
+      </Step>
+      <Step>
+        <Name>DC-CollectCostMetrics</Name>
+        <Condition>(is_sse_request = "false") and (should_record_cost = "true")</Condition>
+      </Step>
+      <Step>
+        <Name>AM-SetTelemetryHeaders</Name>
+      </Step>
+    </Response>
+  </PostFlow>
+  <HTTPProxyConnection>
+    <BasePath>/v2/samples/llm-budget-control-sse</BasePath>
+    <Properties/>
+  </HTTPProxyConnection>
+  <RouteRule name="google-sse">
+    <Condition>(llm_provider = "google") and (is_sse_request = "true")</Condition>
+    <TargetEndpoint>google-sse</TargetEndpoint>
+  </RouteRule>
+  <RouteRule name="others-sse">
+    <Condition>(llm_provider != "google") and (is_sse_request = "true")</Condition>
+    <TargetEndpoint>others-sse</TargetEndpoint>
+  </RouteRule>
+  <RouteRule name="others">
+    <Condition>(llm_provider != "google") and (is_sse_request = "false")</Condition>
+    <TargetEndpoint>others</TargetEndpoint>
+  </RouteRule>
+  <RouteRule name="google">
+    <TargetEndpoint>google</TargetEndpoint>
+  </RouteRule>
+</ProxyEndpoint>

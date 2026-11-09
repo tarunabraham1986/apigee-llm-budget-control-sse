@@ -1,0 +1,13 @@
+{
+  "name": "llm-budget-control-sse",
+  "version": "1.0.0",
+  "description": "Plug-and-play Apigee LLM Budget Control proxy supporting buffered JSON and streaming SSE responses via LLMTokenQuota",
+  "scripts": {
+    "lint": "apigeelint -s apiproxy -e TD004,TD002,PO023 -f table.js",
+    "validate": "python3 test/validate_bundle.py",
+    "test": "node test/test_calculate_cost.js"
+  },
+  "devDependencies": {
+    "apigeelint": "^2.38.0"
+  }
+}

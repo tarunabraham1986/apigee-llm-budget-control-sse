@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+ Copyright 2026 Google LLC
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<DataCapture continueOnError="true" enabled="true" name="DC-CollectCostMetrics">
+  <DisplayName>DC-CollectCostMetrics</DisplayName>
+  <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+  <Capture>
+    <Collect ref="llm_provider" default="google"/>
+    <DataCollector>dc_llm_provider</DataCollector>
+  </Capture>
+  <Capture>
+    <Collect ref="model" default="unknown"/>
+    <DataCollector>dc_llm_model</DataCollector>
+  </Capture>
+  <Capture>
+    <Collect ref="llm_input_tokens" default="0"/>
+    <DataCollector>dc_llm_prompt_tokens</DataCollector>
+  </Capture>
+  <Capture>
+    <Collect ref="llm_output_tokens" default="0"/>
+    <DataCollector>dc_llm_candidates_tokens</DataCollector>
+  </Capture>
+  <Capture>
+    <Collect ref="llm_transaction_cost" default="0.0"/>
+    <DataCollector>dc_llm_transaction_cost_v2</DataCollector>
+  </Capture>
+</DataCapture>

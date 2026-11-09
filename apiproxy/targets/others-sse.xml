@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+ Copyright 2026 Google LLC
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<TargetEndpoint name="others-sse">
+  <Description>Streaming SSE OpenAI and Anthropic TargetEndpoint with EventFlow</Description>
+  <FaultRules/>
+  <PreFlow name="PreFlow">
+    <Request>
+      <Step>
+        <Name>AM-SetOpenAITarget</Name>
+        <Condition>llm_provider != "anthropic"</Condition>
+      </Step>
+      <Step>
+        <Name>AM-SetAnthropicTarget</Name>
+        <Condition>llm_provider = "anthropic"</Condition>
+      </Step>
+    </Request>
+    <Response/>
+  </PreFlow>
+  <PostFlow name="PostFlow">
+    <Request/>
+    <Response/>
+  </PostFlow>
+  <Flows/>
+  <EventFlow name="EventFlow" content-type="text/event-stream">
+    <Response>
+      <Step>
+        <Name>JS-CalculateCost</Name>
+      </Step>
+      <Step>
+        <Name>LTQ-CountBudget</Name>
+        <Condition>(should_record_cost = "true") and (llm_transaction_cost_micro &gt; 0)</Condition>
+      </Step>
+      <Step>
+        <Name>DC-CollectCostMetrics</Name>
+        <Condition>should_record_cost = "true"</Condition>
+      </Step>
+    </Response>
+  </EventFlow>
+  <HTTPTargetConnection>
+    <Properties/>
+    <URL>https://api.openai.com</URL>
+  </HTTPTargetConnection>
+</TargetEndpoint>

@@ -1,0 +1,15 @@
+{
+  "operationConfigs": [
+    {
+      "apiSource": "llm-budget-control-sse",
+      "operations": [
+        {
+          "resource": "/**",
+          "methods": [
+            "POST"
+          ]
+        }
+      ]
+    }
+  ]
+}
